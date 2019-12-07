@@ -28,4 +28,19 @@ ssh -i "mykey.pem" ec2-user@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com
 ```
  RHEL: Ran _apt install unzip python_ (the "ln" step not needed)`
 
- Run "aws --version" to verify installation worked.
+ Run _aws --version_ to verify installation worked.
+
+## 3. Install Kubectl
+```
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x kubectl 
+mv ./kubectl /usr/local/bin/kubectl
+```
+
+## 4. Create an IAM user/role with Route53, EC2, IAM and S3 full access
+* From the dashboard under "Services" -> "Security, Identity, & Compliance" select "IAM"
+* Click on "Roles" (left menu) and "Create role"
+* Select "EC2" as the AWS Service`
+* Click on "Next: Permissions" and check "AmazonRoute53FullAccess", "AmazonEC2ContainerServiceFullAccess", "IAMFullAccess", and "AmazonS3FullAccess"
+* Skip the "Next: Tags" section
+* Click on "Next: Review", ensure that all policies just added are there, and enter a "Role name" (i.e., "k8s-role"), click on "Create role"
