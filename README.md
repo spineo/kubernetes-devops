@@ -37,7 +37,7 @@ chmod +x kubectl
 mv ./kubectl /usr/local/bin/kubectl
 ```
 
-## 4. Create an IAM user/role with Route53, EC2, IAM and S3 full access
+## 4. Create an IAM User/Role with Full Access
 * From the dashboard under "Services" -> "Security, Identity, & Compliance" select "IAM"
 * Click on "Roles" (left menu) and "Create role"
 * Select "EC2" as the AWS Service`
