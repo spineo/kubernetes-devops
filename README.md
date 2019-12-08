@@ -9,7 +9,7 @@ Steps (based on the Red Hat instance, run as root user)
 Under the EC2 Dashboard select "Red Hat Enterprise Linux 8 (64-bit x86)" as the launch instance.
 
 Other parameters:
-* Set a "Name" tag (i.e., k8s_cluster)
+* Set a "Name" tag (i.e., k8s-cluster)
 * Create and download new key pair (.pem format) or use an existing one
 * Note the public DNS and ssh into the instance:
 ```
@@ -25,6 +25,11 @@ ssh -i "mykey.pem" ec2-user@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com
 * Create/select the below rules using "Add Rule"
 
 ![Alt text](/images/security_groups.png?raw=true "Security Groups")
+
+* Go back to the "EC2 Dashboard" -> "Running instances"
+* Select the "k8s-cluster" instance you just created
+* Go to "Actions" -> "Networking" -> "Change Security Groups"
+* Assign the newly created security group
 
 
 ## 3. Install AWS
@@ -53,10 +58,13 @@ mv ./kubectl /usr/local/bin/kubectl
 * Click on "Roles" (left menu) and "Create role"
 * Select "EC2" as the AWS Service`
 * Click on "Next: Permissions" and check "AmazonRoute53FullAccess", "AmazonEC2ContainerServiceFullAccess", "IAMFullAccess", and "AmazonS3FullAccess"
-* Skip the "Next: Tags" section
+* Click the "Next: Tags" section and create a "Name" tag with value "k8s-role"
 * Click on "Next: Review", ensure that all policies just added are there, and enter a "Role name" (i.e., "k8s-role"), click on "Create role"
 
 ## 6. Attached the Newly Created Role to the Server
+* Select the instance on the EC2 Dashboard
+* Go to "Actions" -> "Instance Settings" -> "Attach/Replace IAM Role"
+* Select the newly created role and click "Apply"
 * Run _aws configure_ leaving all parameters blank except the _Default region name_ which can be obtained from the instance details _Availability zone_.
 
 ## 7. Install _kops_, the Application User to Spin Up the Cluster, by Running Below Commands:
@@ -74,4 +82,17 @@ sudo mv kops-linux-amd64 /usr/local/bin/kops
 * Click on "Create"
 
 ## 9. Create and S3 Bucket
-* Run _aws s3 mb s3://dev.mylastname.in_
+* Run _aws s3 mb s3://dev.k8s.mylastname.in_
+* You can also confirm that bucket has been created by going to the dashboard "Services" and search for "S3"
+* Edit the ~/.bashrc to include the variable _export KOPS_STATE_STORE=s3://dev.k8s.mylastname.in_ and run source ~/.bashrc
+
+## 10. Create the Cluster
+* Run _ssh-keygen_ to create the key (use default options and no passphrase)
+* Create the cluster configuration on the S3 bucket by running:
+```
+kops create cluster --cloud=aws --zones=us-east-1c --name=dev.k8s.mylastname.in --dns-zone=mylastname.in --dns private
+```
+* Configure your cluster with: kops update cluster --name dev.k8s.mylastname.in --yes (__Note:__ If you get an error message _UnauthorizedOperation: You are not authorized to perform this operation._ you should be able to resolve this error by creating a new role such as "k8s-role-admin" in step 5 and assign it blanket "AdministratorAccess")
+* If the cluster was successful, you should see in your dashboard 4 running instances including the master and two nodes you just spun up:
+
+
