@@ -56,4 +56,11 @@ curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://
 chmod +x kops-linux-amd64 
 sudo mv kops-linux-amd64 /usr/local/bin/kops
 ```
+## 7. From the EC2 Dashboard Create a _Route53_ Private Hosted Zone
+* Go to "Services" and search for "Route 53"
+* Under "DNS Management" (section 1) click on "Create Hosted Zone"
+* Fill the "Domain Name" field (i.e., mylastname.in)
+* Select "Private Hosted Zone" (unless you have a registered Domain Name)
+* For "VPC ID" select an id associated with your region
+* Click on "Create"
 
