@@ -1,7 +1,7 @@
 # kubernetes-devops
 Implement a DevOps pipeline in a Kubernetes cluster running on AWS
 
-A cluster was deployed on both Red Hat (Red Hat Enterprise Linux release 8.0 - Ootpa) and Ubuntu (Ubuntu 18.04.3 LTS) running on AWS. The setup and installation steps were similar for both clusters each consisting of the deployment VM (t2.micro), a master (c4.large), and 2 nodes (t2.medium)
+A cluster was deployed on both Red Hat (Red Hat Enterprise Linux release 8.0 - Ootpa) and Ubuntu (Ubuntu 18.04.3 LTS) running on AWS. The setup and installation steps were similar for both clusters each consisting of the deployment VM (t2.micro), a master (m3.medium or c4.large), and 2 nodes (t2.medium)
 
 Steps (based on the Red Hat instance, run as root user)
 
@@ -9,7 +9,7 @@ Steps (based on the Red Hat instance, run as root user)
 Under the EC2 Dashboard select "Red Hat Enterprise Linux 8 (64-bit x86)" as the launch instance.
 
 Other parameters:
-* Set a "Name" tag (i.e., k8s-cluster)
+* Set a "Name" tag (i.e., k8s-cluster). We will call this the management instance.
 * Create and download new key pair (.pem format) or use an existing one
 * Note the public DNS and ssh into the instance:
 ```
@@ -94,5 +94,15 @@ kops create cluster --cloud=aws --zones=us-east-1c --name=dev.k8s.mylastname.in 
 ```
 * Configure your cluster with: kops update cluster --name dev.k8s.mylastname.in --yes (__Note:__ If you get an error message _UnauthorizedOperation: You are not authorized to perform this operation._ you should be able to resolve this error by creating a new role such as "k8s-role-admin" in step 5 and assign it blanket "AdministratorAccess")
 * If the cluster was successful, you should see in your dashboard 4 running instances including the master and two nodes you just spun up:
+
+![Alt text](/images/running_instances.png?raw=true "Running Instances")
+
+## 11. Access the Cluster
+* Log into the master node as _admin_ user (i.e., _ssh -i ~/.ssh/id_rsa admin@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com_) from you management instance.
+* Run a command like _kubectl get nodes_ to view the running nodes and add option _--show-labels_ for detailed configuration (you can alias the regularly used kubectl command as _alias k="kubectl"_ and add it to the admin ~/.bashrc)
+
+## 12. __IMPORTANT__: Delete the Cluster
+* If you are on a small budget I highly recommend you run _kops delete cluster dev.k8s.mylastnane.in --yes_ once you are done as AWS charges tend tyo skyrocket pretty fast when running a cluster (you can always easily re-create the cluster with your stored configuration). Note that simply stopping or even terminating the instances on the dashboard will not work!
+
 
 
