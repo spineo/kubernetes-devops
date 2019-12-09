@@ -105,11 +105,9 @@ kops create cluster --cloud=aws --zones=us-east-1c --name=dev.k8s.mylastname.in 
 
 ## 13. __IMPORTANT__: Delete the Cluster
 * If you are on a small budget I highly recommend you run _kops delete cluster dev.k8s.mylastnane.in --yes_ once you are done as AWS charges tend tyo skyrocket pretty fast when running a cluster (you can always easily re-create the cluster with your stored configuration). Note that simply stopping or even terminating the instances on the dashboard will not work!
+__To re-create a deleted cluster repeat step #11__
 
-## 14. Re-Create the Cluster (if it was delted)
-* Repeat steps #11
-
-## 15. Install Helm on the Master Node (to be used to spin up cluster applications)
+## 14. Install Helm on the Master Node (to be used to spin up cluster applications)
 * Log into the master node as _admin_ user (i.e., _ssh -i ~/.ssh/id_rsa admin@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com_) from you management instance.
 Run below commands:
 ```
