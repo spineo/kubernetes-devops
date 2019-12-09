@@ -86,23 +86,37 @@ sudo mv kops-linux-amd64 /usr/local/bin/kops
 * You can also confirm that bucket has been created by going to the dashboard "Services" and search for "S3"
 * Edit the ~/.bashrc to include the variable _export KOPS_STATE_STORE=s3://dev.k8s.mylastname.in_ and run source ~/.bashrc
 
-## 10. Create the Cluster
+## 10. Create the Cluster Key
 * Run _ssh-keygen_ to create the key (use default options and no passphrase)
+
+## 11. Create the Cluster
 * Create the cluster configuration on the S3 bucket by running:
 ```
 kops create cluster --cloud=aws --zones=us-east-1c --name=dev.k8s.mylastname.in --dns-zone=mylastname.in --dns private
 ```
-* Configure your cluster with: kops update cluster --name dev.k8s.mylastname.in --yes (__Note:__ If you get an error message _UnauthorizedOperation: You are not authorized to perform this operation._ you should be able to resolve this error by creating a new role such as "k8s-role-admin" in step 5 and assign it blanket "AdministratorAccess")
+* Configure your cluster with: _kops update cluster --name dev.k8s.mylastname.in --yes_ (__Note:__ If you get an error message _UnauthorizedOperation: You are not authorized to perform this operation._ you should be able to resolve this error by creating a new role such as "k8s-role-admin" in step 5 and assign it blanket "AdministratorAccess")
 * If the cluster was successful, you should see in your dashboard 4 running instances including the master and two nodes you just spun up:
 
 ![Alt text](/images/running_instances.png?raw=true "Running Instances")
 
-## 11. Access the Cluster
+## 12. Access the Cluster
 * Log into the master node as _admin_ user (i.e., _ssh -i ~/.ssh/id_rsa admin@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com_) from you management instance.
 * Run a command like _kubectl get nodes_ to view the running nodes and add option _--show-labels_ for detailed configuration (you can alias the regularly used kubectl command as _alias k="kubectl"_ and add it to the admin ~/.bashrc)
 
-## 12. __IMPORTANT__: Delete the Cluster
+## 13. __IMPORTANT__: Delete the Cluster
 * If you are on a small budget I highly recommend you run _kops delete cluster dev.k8s.mylastnane.in --yes_ once you are done as AWS charges tend tyo skyrocket pretty fast when running a cluster (you can always easily re-create the cluster with your stored configuration). Note that simply stopping or even terminating the instances on the dashboard will not work!
+
+## 14. Re-Create the Cluster (if it was delted)
+* Repeat steps #11
+
+# 15. Install Helm on the Master Node (to be used to spin up cluster applications)
+* Log into the master node as _admin_ user (i.e., _ssh -i ~/.ssh/id_rsa admin@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com_) from you management instance.
+Run below commands:
+```
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+```
 
 
 
