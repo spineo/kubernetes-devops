@@ -109,7 +109,7 @@ kops create cluster --cloud=aws --zones=us-east-1c --name=dev.k8s.mylastname.in 
 ## 14. Re-Create the Cluster (if it was delted)
 * Repeat steps #11
 
-# 15. Install Helm on the Master Node (to be used to spin up cluster applications)
+## 15. Install Helm on the Master Node (to be used to spin up cluster applications)
 * Log into the master node as _admin_ user (i.e., _ssh -i ~/.ssh/id_rsa admin@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com_) from you management instance.
 Run below commands:
 ```
