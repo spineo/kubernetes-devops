@@ -22,9 +22,7 @@ ssh -i "mykey.pem" ec2-user@ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com
 ## 2. Create and Attach a Security Group
 * Click on the "EC2 Dashboard" -> "Security groups" -> "Create Security Group"
 * Fill out the "Security group name" field (i.e., k8s-cluster) and "Description"
-* Create/select the below rules using "Add Rule"
-
-![Alt text](/images/security_groups.png?raw=true "Security Groups")
+* Create/select the needed rules using "Add Rule"
 
 * Go back to the "EC2 Dashboard" -> "Running instances"
 * Select the "k8s-cluster" instance you just created
